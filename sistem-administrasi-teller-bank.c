@@ -77,15 +77,56 @@ void initDoubleLinkedList(DoubleLinkedList *dll) {
 }
 
 // fungsi deQueue - Nasabah selesai dilayani 
+Node* deQueue(Queue *q) {
+    if (q->front == NULL) {
+        printf("Antrian kosong. Tidak ada Nasabah yang dilayani.\n");
+        return NULL;
+    }
+
+    Node* temp = q->front;
+    q->front = q->front->next;
+
+    if (q->front == NULL) {
+        q->rear = NULL;
+    }
+
+    temp->next = NULL;
+    printf("Nasabah dengan ID %d dan nama %s selesai dilayani.\n", temp->id, temp->nama);
+    return temp;
+}
 
 // fungsi printQueue - tampilkan antrian Nasabah
 
 // fungsi initStack
+void initStack(Stack *s) {
+    s->top = NULL;
+    }
 
 // fungsi push Stack - memasukkan Nasabah yang selesai dilayani ke Stack
+void push(Stack *s, Node *nasabah) {
+    if (nasabah == NULL) {
+        return;
+    }
+
+    nasabah->next = s->top;
+    s->top = nasabah;
+    printf("Nasabah dengan ID %d dan nama %s telah ditambahkan ke riwayat pelayanan (Stack).\n", nasabah->id, nasabah->nama);
+    }
 
 // fungsi pop Stack - menghapus data Nasabah yang selesai dilayani dari Stack
-
+node* pop(stack *s){
+    if(s-> top == NULL){
+        printf("Riwayat pelayanan kosong. \n");
+        return NULL;
+    }
+    Node* temp = s ->top;
+    s->top = s->top->next;
+    temp->next = NULL;
+    printf("Nasabah dengan ID %d dan nama %s dihapus dari riwayat pelayanan (Stack).\n", temp->id, temp->nama);
+    free(temp);
+    return temp;
+}
+    
 // fungsi printStack - menampilkan data Nasabah yang selesai dilayani hari ini
 
 // data statis double-linkedlist untuk menyimpan data Nasabah kemarin.
@@ -121,6 +162,8 @@ void printDoubleLinkedList(DoubleLinkedList *dll) {
 // fungsi main
 int main () {
     Queue q;
+    Stack s; 
+	initStack(&s);
     DoubleLinkedList dll;
 
     
@@ -150,7 +193,7 @@ int main () {
         getchar();
 
         switch (choice) {
-            case 1:
+            case 1:{
                 printf("Masukkan ID Nasabah: ");
                 scanf("%d", &id);
                 getchar(); // menangkap newline setelah scanf
@@ -159,10 +202,14 @@ int main () {
                 nama[strcspn(nama, "\n")] = 0; // menghapus newline di akhir input
                 enQueue(&q, id, nama);
             break;
+            }
 
-            case 2: // Iqbal
+            case 2: {// Iqbal
                 // dequeue + push stack
-            break;
+                Node* nasabahDilayani = deQueue(&q); // Untuk mengambil nasabah dari antrian
+                push(&s, nasabahDilayani);           // Masukkan nasabah yang sudah dilayani ke stack
+                break;
+            }
 
             case 3: // Wildan
                 // print queue
@@ -194,6 +241,7 @@ int main () {
 
             case 5: // Rama
                 // pop stack
+                pop(&s);
             break;
 
             case 6:
