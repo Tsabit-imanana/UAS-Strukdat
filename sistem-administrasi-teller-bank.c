@@ -55,6 +55,26 @@ void enQueue(Queue *q, int id, char *nama) {
     }
     printf("Nasabah dengan ID %d dan nama %s telah ditambahkan ke antrian.\n", id, nama);
 }
+// definisi struct untuk Double Linked List yang menyimpan data kemarin
+typedef struct DoubleLinkedList {
+    DoubleNode* head;
+    DoubleNode* tail;
+} DoubleLinkedList;
+// fungsi untuk membuat DoubleNode baru (Double Linked List)
+DoubleNode* createDoubleNode(int id, char* nama) {
+    DoubleNode *newNode = (DoubleNode*)malloc(sizeof(DoubleNode));
+    newNode->id = id;
+    strcpy(newNode->nama, nama);
+    newNode->prev = NULL;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// fungsi untuk inisialisasi Double Linked List
+void initDoubleLinkedList(DoubleLinkedList *dll) {
+    dll->head = NULL;
+    dll->tail = NULL;
+}
 
 // fungsi deQueue - Nasabah selesai dilayani 
 
@@ -69,13 +89,51 @@ void enQueue(Queue *q, int id, char *nama) {
 // fungsi printStack - menampilkan data Nasabah yang selesai dilayani hari ini
 
 // data statis double-linkedlist untuk menyimpan data Nasabah kemarin.
+// fungsi untuk menambah Nasabah ke Double Linked List (kemarin)
+void addToDoubleLinkedList(DoubleLinkedList *dll, int id, char *nama) {
+    DoubleNode *newNode = createDoubleNode(id, nama);
+    if (dll->tail == NULL) {
+        dll->head = dll->tail = newNode;
+    } else {
+        dll->tail->next = newNode;
+        newNode->prev = dll->tail;
+        dll->tail = newNode;
+    }
+    printf("Nasabah dengan ID %d dan nama %s telah ditambahkan ke riwayat kemarin.\n", id, nama);
+}
+//Print double LinkedList
+void printDoubleLinkedList(DoubleLinkedList *dll) {
+    DoubleNode *current = dll->head;
+    if (current == NULL) {
+        printf("Tidak ada riwayat pelayanan kemarin.\n");
+        return;
+    }
+    while (current != NULL) {
+        printf("ID: %d, Nama: %s\n", current->id, current->nama);
+        current = current->next;
+    }
+}
+
+
+
+
 
 // fungsi main
 int main () {
     Queue q;
+    DoubleLinkedList dll;
+
     
     int choice, id;
     char nama[50];
+    // Data statis untuk transaksi kemarin
+    initDoubleLinkedList(&dll);
+    addToDoubleLinkedList(&dll, 101, "Andi");
+    addToDoubleLinkedList(&dll, 102, "Budi");
+    addToDoubleLinkedList(&dll, 103, "Charlie");
+    addToDoubleLinkedList(&dll, 104, "Dewi");
+    addToDoubleLinkedList(&dll, 105, "Eka");
+
 
     printf("Selamat Datang di Sistem Administrasi Teller Bank Sejahtera\n");
 
@@ -112,11 +170,26 @@ int main () {
 
             case 4: // Tsabit
                 printf ("Silahkan pilih riwayat transaksi yang ingin ditampilkan:\n");
-                // Case
-                    // case 1 : Hari ini (Stack)
-                    // case 2 : Kemarin (Double Linked List)
-                    // case 3 : Semua di urutkan dari hari ini sebagai yang paling atas(Double Linked List)
-                // printstack
+                printf("1. Hari ini (Stack)\n");
+                printf("2. Kemarin (Double Linked List)\n");
+                printf("3. Semua (Stack + Double Linked List)\n");
+                int riwayatChoice;
+                scanf("%d", &riwayatChoice);
+
+                switch (riwayatChoice) {
+                    case 1:
+                        // printStack(&s);
+                        break;
+                    case 2:
+                        printDoubleLinkedList(&dll);
+                        break;
+                    case 3:
+                        // printAllHistory(&s, &dll);
+                        break;
+                    default:
+                        printf("Pilihan tidak valid!\n");
+                }
+                break;
             break;
 
             case 5: // Rama
